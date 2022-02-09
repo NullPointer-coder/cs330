@@ -1,0 +1,340 @@
+\documentclass[11pt]{article}
+\usepackage[paper=letterpaper, left=1in, right=1in, top=1in, bottom=1in]
+           {geometry}
+\usepackage[parfill]{parskip}
+\usepackage{amsmath}
+\usepackage[siunitx]{circuitikz}
+\usepackage{color}
+
+\newcommand{\problem}[1]{\textbf{Problem #1 ---} }
+\newcommand{\answer}{{\color{red}\textit{Answer: }}}
+\newcommand{\amp}{\ampere}
+
+\begin{document}
+\thispagestyle{empty}
+
+\begin{center}
+{\large CS330 Architecture and Organization}\\
+Assignment Chapter 1
+\end{center}
+
+\begin{flushright}
+Jingbo Wang
+\end{flushright}
+
+\problem{1.1}(2 points) Aside from the smart cell phones used by a billion people, list and describe four other types of computers. (Section 1)
+
+\answer 
+\begin{enumerate}
+    \item Desktop
+    \item Laptop
+    \item Smart Watch
+    \item Calculator
+\end{enumerate}
+
+\problem{1.3}(3 points) Describe the steps that transform a program written in a high-level language such as C into a representation that is directly executed by a computer processor. (Section 3)
+
+\answer
+1. A compiler could read the high-level source code and translate the source code into a assembly language.
+
+2. Then, the assembler transforms the assembly language into machine language, which is what a computer understands and executes directly.
+
+\problem{1.4} Assume a color display using 8 bits for each of the primary colors (red, green, blue) per pixel and a frame size of $1280 \times 1024$. (Section 4)
+
+a. (2 points) What is the minimum size in bytes of the frame buffer to store a frame?
+
+\answer
+As we all know that 
+\begin{align*}
+    1 \enspace byte = 8 \enspace bits
+\end{align*}
+So, we have that each color of the pixel is 1 byte. Then, the pixel is:
+\begin{align*}
+    3 \times 1 \enspace bit &= 3 \enspace bits
+\end{align*}
+Therefore, the minimum size of the frame buffer is:
+\begin{align*}
+    3 \times 1280 \times 1024 &= 3932160 \enspace bytes
+\end{align*}
+
+b. (2 points) How long would it take, at a minimum, for the frame to be sent over a 100 Mbits/s network?
+
+\answer
+
+We have:
+\begin{align*}
+    1 \enspace byte &= 8 \enspace bits
+\end{align*}
+The size of the frame buffer in bits is:
+\begin{align*}
+    3932160 \enspace bytes \times 8 \enspace bits &= 31457280 \enspace bits 
+\end{align*}
+Therefore, we could calculate the times:
+\begin{align*}
+    times &= \frac{size}{speed} \\
+          &= \frac{31457280 \enspace bits}{100 \enspace Mbits/s}\\
+          &= \frac{31457280 \enspace bits}{100 \times 10^{6} \enspace bits/s}\\
+          &= \frac{31457280 \enspace bits}{10^{8} \enspace bits/s}\\
+          &= 0.3145728 \enspace s
+\end{align*}
+
+\problem{A} Consider three different processors that implement the same instruction set architecture.  Call the implementations $P_{1}$, $P_{2}$, and $P_{3}$:
+
+\begin{center}
+\begin{tabular}{c|r|r}
+\textbf{Processor} & \textbf{Clock Rate} & \textbf{CPI} \\ \hline \hline
+$P_{1}$ & 3 GHz & 1.5 \\ \hline
+$P_{2}$ & 2.5 GHz & 1.0 \\ \hline
+$P_{3}$ & 4.0 GHz & 2.2 \\
+\end{tabular}
+\end{center}
+(Section 6)
+
+a. (4 points) Calculate the clock tick time for each processor.  Give your answer in picoseconds, rounded to the closest picosecond.
+
+\answer
+
+For $P_1$: 
+\begin{align*}
+    clock \enspace time &= \frac{1}{clock \enspace rate} \\
+                        &= \frac{1}{3 \enspace GHz} \\
+                        &= \frac{1}{3 \times 10^{9} \enspace Hz} \\
+                        &= 3.33 \times 10^{-10} \enspace s \\
+                        &= 333.33 \enspace ps \\
+\end{align*}
+
+For $P_2$:
+\begin{align*}
+    clock\enspace time &= \frac{1}{clock \enspace rate} \\
+                       &= \frac{1}{2.5 \enspace GHz} \\
+                       &= \frac{1}{2.5 \times 10^{9} \enspace Hz} \\
+                       &= 4.0 \times 10^{-10} \enspace s \\
+                       &= 400 \enspace ps \\
+\end{align*}
+
+For $P_3$:
+\begin{align*}
+    clock \enspace time &= \frac{1}{clock \enspace rate} \\
+                        &= \frac{1}{2.5 \enspace GHz} \\
+                        &= \frac{1}{4.0 \times 10^{9} \enspace Hz} \\
+                        &= 2.5 \times 10^{-10} \enspace s \\
+                        &= 250 \enspace ps \\
+\end{align*}
+
+b. (2 point) Which processor has the highest performance, if we are interested only in clock cycles per second?
+
+\answer
+
+$P_3$, because $P_3$ has maximum number of clock cycles per second.
+
+c. (3 points) Suppose each processor executes a program for 10 seconds.  Calculate the number of clock cycles used. Give your answer rounded to the closest whole number.
+
+\answer
+We have the executing time = 10 seconds.
+
+For $P_1$:
+\begin{align*}
+    Number \enspace of \enspace clock \enspace cycles 
+                    &= execution \enspace time \times clock \enspace rate\\
+                    &= 10 \enspace seconds \times 3 \times 10^{9} \enspace \frac{cycles}{second}\\ 
+                    &= 3 \times 10^{10} \enspace cycles
+\end{align*}
+
+For $P_2$:
+\begin{align*}
+    Number \enspace of \enspace clock \enspace cycles
+                    &= execution \enspace time \times clock \enspace rate\\
+                    &= 10 \times 2.5 \times 10^{9}\\ 
+                    &= 2.5 \times 10^{10} \enspace cycles
+\end{align*}
+
+For $P_3$:
+\begin{align*}
+    Number \enspace of \enspace clock \enspace cycles 
+                    &= execution \enspace time \times clock \enspace rate\\
+                    &= 10 \times 4.0 \times 10^{9}\\ 
+                    &= 4.0 \times 10^{10} \enspace cycles
+\end{align*}
+
+d. (3 points) Calculate the average number of instructions executed per second for each processor.  Which processor has the highest performance, if we are interested only in the average number of instructions executed per second?
+
+\answer
+
+For $P_1$:
+\begin{align*}
+    Number\enspace of \enspace instructions \enspace per \enspace second 
+                     &= \frac{clock \enspace rate}{CPI}\\
+                     &= \frac{3 \times 10^{9}}{1.5}\\ 
+                     &= 2 \times 10^{9} \enspace instructions/s
+\end{align*}
+
+For $P_2$:
+\begin{align*}
+     Number\enspace of \enspace instructions \enspace per \enspace second
+                     &= \frac{clock \enspace rate}{CPI}\\
+                     &= \frac{2.5 \times 10^{9}}{1.0}\\ 
+                     &= 2.5 \times 10^{9} \enspace instructions/s
+\end{align*}
+
+For $P_3$:
+\begin{align*}
+    Number\enspace of \enspace instructions \enspace per \enspace second 
+                     &= \frac{clock \enspace rate}{CPI}\\
+                     &= \frac{4.0 \times 10^{9}}{2.2}\\ 
+                     &= 1.818 \times 10^{9} \enspace instructions/s
+\end{align*}
+
+Therefore, $P_2$ has highest performance.
+
+e. (3 points) If the processors each execute a particular program in 10 seconds, find the number of instructions used by each processor.
+
+\answer
+
+For $P_1$:
+\begin{align*}
+    Number \enspace of \enspace instructions 
+                     &= \frac{execution \enspace time \times clock \enspace rate}{CPI}\\
+                     &= \frac{3 \times 10^{10}}{1.5}\\ 
+                     &= 2 \times 10^{10} \enspace instructions
+\end{align*}
+
+For $P_2$:
+\begin{align*}
+    Number \enspace of \enspace instructions 
+                     &= \frac{execution \enspace time \times clock \enspace rate}{CPI}\\
+                     &= \frac{2.5 \times 10^{10}}{1.0}\\ 
+                     &= 2.5 \times 10^{10} \enspace instructions
+\end{align*}
+
+For $P_3$:
+\begin{align*}
+    Number \enspace of \enspace instructions \enspace 
+                     &= \frac{execution \enspace time \times clock \enspace rate}{CPI}\\
+                     &= \frac{4.0 \times 10^{10}}{2.2}\\ 
+                     &= 1.818 \times 10^{10} \enspace instructions
+\end{align*}
+
+
+\problem{B} Consider two different implementations of an instruction set architecture: $P_{1}$ and $P_{2}$.  The instructions in this ISA can be divided into four different categories:  A, B, C, and D.  The following table gives the clock rate of each processor, along with the CPIs of the instructions from each class.
+
+\begin{center}
+\begin{tabular}{r||c|c}
+& $P_{1}$ & $P_{2}$ \\ \hline
+\textbf{Clock Rate} & 2.5 GHz & 3 GHz \\ \hline
+\textbf{CPI for class A instructions} & 1 & 2 \\ \hline
+\textbf{CPI for class B instructions} & 2 & 2 \\ \hline
+\textbf{CPI for class C instructions} & 3 & 2 \\ \hline
+\textbf{CPI for class D instructions} & 4 & 2 \\
+\end{tabular}
+\end{center}
+(Section 6)
+
+When we use the llvm compiler to compile the source code for a particular program, the compiler uses $2.5 \cdot 10^{8}$ instructions, drawn from the four classes as follows:  10\% from A, 20\% from B, 50\% from C, and 20\% from D.
+
+a. (4 points) Calculate the average CPI used during the compilation for both processors?
+
+\answer
+
+For $P_1$:
+\begin{align*}
+    average \enspace CPI 
+            &= 1 \times 10\% + 2 \times 20\% + 3 \times 50\% + 4 \times 20\%\\
+            &= 0.1 + 0.4 + 1.5 + 0.8\\
+            &= 2.8
+\end{align*}
+
+For $P_2$:
+\begin{align*}
+    average \enspace CPI 
+            &= 2 \times 10\% + 2 \times 20\% + 2 \times 50\% + 2 \times 20\%\\
+            &= 0.2 + 0.4 + 1.0 + 0.4\\
+            &= 2.0
+\end{align*}
+
+b. (4 points) How many clock cycles does the compilation take on each processor?
+
+\answer
+
+For $P_1$:
+\begin{align*}
+    clock \enspace cycles &= CPI \times instruction \enspace count\\
+                          &= 2.8 \times 2.5 \cdot 10^{8}\\
+                          &= 7.0 \times 10^{8}
+\end{align*}
+
+For $P_2$:
+\begin{align*}
+    clock \enspace cycles &= CPI \times instruction \enspace count\\
+                          &= 2.0 \times 2.5 \cdot 10^{8}\\
+                          &= 5.0 \times 10^{8}
+\end{align*}
+
+
+c. (4 points) How much time does the compilation take on each processor?
+
+\answer
+
+For $P_1$:
+\begin{align*}
+    clock\enspace time &= \frac{1}{clock \enspace rate} \\
+                       &= \frac{1}{2.5 \enspace GHz} \\
+                       &= \frac{1}{2.5 \times 10^{9} \enspace Hz} \\
+                       &= 4.0 \times 10^{-10} \enspace s \\
+\end{align*}
+The taken to compile is:
+\begin{align*}
+    times &= clock \enspace cycles \times clock\enspace time\\
+          &= 7.0 \times 10^{8} \times 4.0 \times 10^{-10}\\
+          &= 0.28 \enspace s
+\end{align*}
+
+For $P_2$:
+\begin{align*}
+    clock\enspace time &= \frac{1}{clock \enspace rate} \\
+                       &= \frac{1}{3.0 \enspace GHz} \\
+                       &= \frac{1}{3.0 \times 10^{9} \enspace Hz} \\
+                       &= 3.33 \times 10^{-10} \enspace s \\
+\end{align*}
+The taken to compile is:
+\begin{align*}
+    times &= clock \enspace cycles \times clock\enspace time\\
+          &= 5.0 \times 10^{8} \times 3.33 \times 10^{-10}\\
+          &= 0.1665 \enspace s
+\end{align*}
+
+d. (2 points) Which processor is faster on this task?
+
+\answer
+
+$P_2$. Because of 0.165s $<$ 0.28s, $P_2$ use less time than $P_1$ does.
+
+e. (4 points) Calculate the performance of each processor in terms of compilations per second.
+
+\answer
+
+For $P_1$:
+\begin{align*}
+    performance \enspace per  \enspace second 
+          &= \frac{1}{times}\\
+          &= \frac{1}{0.28 \enspace s}\\
+          &= 3.57 \enspace s^{-1}
+\end{align*}
+
+For $P_2$:
+\begin{align*}
+    performance \enspace per  \enspace second 
+          &= \frac{1}{times}\\
+          &= \frac{1}{0.1665 \enspace s}\\
+          &= 6.006 \enspace s^{-1}
+\end{align*}
+
+f. (4 points) Use your answer from e.\ to determine which processor has the better performance, and then calculate how much faster that processor is than the slower processor.
+
+\answer
+\begin{align*}
+    \frac{P_2 \enspace 's \enspace performance}{P_1 \en 's \enspace performance}
+          &= \frac{6.006 \enspace s^{-1}}{3.57 \enspace s^{-1}}\\
+          &= 1.68
+\end{align*}
+
+\end{document}
