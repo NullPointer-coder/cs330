@@ -1,0 +1,219 @@
+\documentclass[11pt]{article}
+\usepackage[paper=letterpaper, left=1in, right=1in, top=1in, bottom=1in]
+           {geometry}
+\usepackage[parfill]{parskip}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{tikz}
+\usepackage[siunitx]{circuitikz}
+\usepackage{color}
+\usepackage{graphicx}
+
+\newcommand{\problem}[1]{\textbf{Problem #1 ---} }
+\newcommand{\answer}{{\color{red}\textit{Answer: }}}
+\newcommand{\amp}{\ampere}
+
+\tikzset{
+  pics/byte cube/.style args = {#1,#2}{
+      code = {
+         \draw[fill=white] (0,0) rectangle (1,1);
+         \node at (0.5,0.5){#1};
+         \draw[cube #1] (0,0)--(-60:2mm)--++(1,0)--++(0,1)--++(120:2mm)--(1,0)--cycle;
+         \draw(1,0)--++(-60:2mm);
+         \node at (0.5,-0.5){$2^{#2}$};
+      }
+    },
+    cube 1/.style = {fill=gray!30}, % style for bytes that are "on"
+    cube 0/.style = {fill=white},   % style for bytes that are "off"
+}
+
+\newcommand\BinaryNumber[1]{%
+  \begin{tikzpicture}[scale=0.5, every node/.style={scale=0.5}]
+     % count the number of bytes and store as \C
+     \foreach \i [count=\c] in {#1} { \xdef\C{\c} }
+     \foreach \i [count=\c, evaluate=\c as \ex using {int(\C-\c)}] in {#1} {
+       \pic at (\c, 1) {byte cube={\i,\ex}};
+     }
+  \end{tikzpicture}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+\begin{center}
+{\large CS330 Architecture and Organization}\\
+Assignment Chapter 3
+\end{center}
+
+\begin{flushright}
+KEY %%% <- FIXME
+\end{flushright}
+
+\problem{1}(8 points) Convert the following binary values to decimal.
+\begin{enumerate}[(a)]
+    \item $0.11$
+    \item $101.011$
+    \item $10\;0000\;0000.0000\;0000\;01$
+    \item $1111\;1111.1111\;1111$
+\end{enumerate}
+
+\answer
+{\color{blue}
+\begin{enumerate}[(a)]
+    \item $2^{-1} + 2^{-2} = 0.5 + 0.25 = 0.75$
+    \item $2^{2} + 2^{0} + 2^{-2} +2^{-3} = 4 + 1 + 0.25 + 0.125 = 5.375$
+    \item $2^9 + 2^{-10} = 512.0009765625$
+    \item This can be done by hand, but a clever trick is to realize that the ones left of the binary point are one less than a power of 2.  And the ones to the right of the binary point are the same number but shifted.\\
+	$(2^8-1) + (2^8-1)\cdot 2^{-8} = (2^8 - 1) + (1 - 2^{-8}) = 2^8 - 2^{-8} = 255.99609375$
+\end{enumerate}
+}
+
+\problem{2}(8 points) Convert the following decimal values to binary.
+\begin{enumerate}[(a)]
+    \item $0.25$
+    \item $8.125$
+    \item $0.2$
+    \item $15.15$
+\end{enumerate}
+
+\answer
+{\color{blue}
+\begin{enumerate}[(a)]
+    \item In base ten, $25/100 = 1/4 = 2^{-2}$, so in binary $0.01$.
+    \item In base ten, $8 + 125/1000 = 8 + 1/8 = 2^3 + 2^{-3}$, so in binary $1000.001$.
+    \item This one is best solved by the standard algorithm, multiply by two until you get a number larger than one.  Then subtract off the one and keep going.
+	\begin{align*}
+	    0.2 \cdot 2 &= 0.4 \quad\rightarrow\quad 0\\
+	    0.4 \cdot 2 &= 0.8 \quad\rightarrow\quad 0\\
+	    0.8 \cdot 2 &= 1.6 \quad\rightarrow\quad 1 \text{ and subtract one}\\
+	    0.6 \cdot 2 &= 1.2 \quad\rightarrow\quad 1 \text{ and subtract one}\\
+	    0.2 \cdot 2 &= 0.4 \quad\rightarrow\quad 0\\
+	    &\;\vdots
+	\end{align*}
+	So, the binary value is $0.00110011\ldots.$
+    \item The whole part is $15$ which is easily seen to be $8+4+2+1$ or in binary $1111$.  The fraction part is best computed via the algorithm.
+	\begin{align*}
+	    0.15 \cdot 2 &= 0.30 \quad\rightarrow\quad 0\\
+	    0.30 \cdot 2 &= 0.60 \quad\rightarrow\quad 0\\
+	    0.60 \cdot 2 &= 1.20 \quad\rightarrow\quad 1 \text{ and subtract one}\\
+	    0.20 \cdot 2 &= 0.40 \quad\rightarrow\quad 0\\
+	    &\;\vdots
+	\end{align*}
+	At this point we recognize the same pattern as the previous question.  So the final result is: $1111.0010011001100\ldots.$
+\end{enumerate}
+}
+
+\problem{3}(8 points) Normalize the following fractional binary numbers.  Give your answers in scientific notation, expressing the mantissa in binary and the exponents in decimal.
+\begin{enumerate}[(a)]
+    \item $10.0$
+    \item $0.1000\;0111$
+    \item $1101\;0110.01$
+    \item $0.0001\;1$
+\end{enumerate}
+
+\answer
+{\color{blue}
+\begin{enumerate}[(a)]
+    \item $1.00 \times 2^1$
+    \item $1.0000\;111 \times 2^{-1}$
+    \item $1.1010\;1100\;1 \times 2^7$
+    \item $1.1 \times 2^{-4}$
+\end{enumerate}
+}
+
+\fbox{\parbox{\textwidth}{
+In class we did all of our examples in 64-bit double precision floating point format, but for the sake of brevity, I would like you to look up the specifications for \textbf{single precision} floating point format (which has different sized fields and a different exponent bias).  Use single precision for the following exercises.
+}}
+
+\problem{4}(8 points) Show how the following binary numbers would be represented in single precision floating point.  In each number, the mantissa is given in binary and the exponent is given in decimal.  Present your answers in binary.
+\begin{enumerate}[(a)]
+    \item $\phantom{-}1.1\times 2^0$
+    \item $-1.0100\;1100\;0010\times 2^{ 15}$
+    \item $\phantom{-} 1.0100\;1100\;0010\times 2^{-15}$
+    \item $\phantom{-} 1.1100\;0000\;1\times 2^{126}$
+\end{enumerate}
+
+\answer
+{\color{blue}
+All of these use 1 sign bit, 8 bits of exponent with a bias of 127, and 23 bits of mantissa (with an understood one, except in unnormalized numbers).
+\begin{enumerate}[(a)]
+\item
+    $s=0, E=0+127, m=0.1$\\
+\BinaryNumber{0,0,1,1,1,1,1,1,% FIXME: update with your answer
+              1,1,0,0,0,0,0,0,%
+	      0,0,0,0,0,0,0,0,%
+	      0,0,0,0,0,0,0,0}
+\item
+    $s=1, E=15+127, m=0.01001100001$\\
+\BinaryNumber{1,1,0,0,0,1,1,1,% FIXME: update with your answer
+              0,0,1,0,0,1,1,0,%
+	      0,0,0,1,0,0,0,0,%
+	      0,0,0,0,0,0,0,0}
+\item
+    $s=0, E=-15+127, m=0.01001100001$\\
+\BinaryNumber{0,0,1,1,1,0,0,0,% FIXME: update with your answer
+              0,0,1,0,0,1,1,0,%
+	      0,0,0,1,0,0,0,0,%
+	      0,0,0,0,0,0,0,0}
+\item
+    $s=0, E=126+127, m=0.110000001$\\
+\BinaryNumber{0,1,1,1,1,1,1,0,% FIXME: update with your answer
+              1,1,1,0,0,0,0,0,%
+	      0,1,0,0,0,0,0,0,%
+	      0,0,0,0,0,0,0,0}
+\end{enumerate}
+}
+
+\problem{5}(8 points) Convert the following IEE754 single precision bit patterns to decimal values, using regular or scientific notation as you believe appropriate.
+\begin{enumerate}[(a)]
+    \item \texttt{0x\;BFC0\;0000}
+    \item \texttt{0x\;C0E0\;0000}
+    \item \texttt{0x\;7010\;2000}
+    \item \texttt{0x\;FFFF\;FFFF}
+\end{enumerate}
+
+\answer
+{\color{blue}
+\begin{enumerate}[(a)]
+    \item In binary this is $1011\;1111\;1100\;0000\;0000\;0000\;0000\;0000$, or separated into the floating point fields, $1\;01111111\;10000000000000000$.  The sign is negative, the exponent is $e=127-127$ and the mantissa is $1.1$.  Thus, the value in decimal is $-1.5 \times 2^0 = -1.5$.
+    \item In binary this is $1100\;0000\;1110\;0000\;0000\;0000\;0000\;0000$, or separated into the floating point fields, $1\;10000001\;11000000000000000000000$.  The sign is negative, the exponent is $e=120-127$ and the mantissa is $1.11$.  Thus, the value in decimal is $-1.75 \times 2^2 = -7$.
+    \item In binary this is $0111\;0000\;0001\;0000\;0010\;0000\;0000\;0000$, or separated into the floating point fields, $0\;11100000\;00100000010000000000000$.  The sign is positive, the exponent is $e=224-127$ and the mantissa is $1.0010000001$.  Thus, the value in decimal is $(1+2^{-3}+2^{-10}) \times 2^{97} = 2^{97} + 2^{94} + 2^{87}$.
+    \item $-$NaN, although technically the sign bit is not meaningful for not-a-number, so NaN is equally (or arguably more) correct.
+\end{enumerate}
+}
+
+\problem{6}(5 points) The Python programming language has arbitrary integer arithmetic and double precision floating point arithmetic.  Consider the following calculations:
+\begin{verbatim}
+>>> 2**53
+9007199254740992
+
+>>> float(2**53)
+9007199254740992.0
+
+>>> 1+2**53
+9007199254740993
+
+>>> float(1+2**53)
+9007199254740992.0
+
+>>> 3+2**53
+9007199254740995
+
+>>> float(1+2**53)
+9007199254740996.0
+\end{verbatim}
+Use your knowledge of floating point to explain what's going on.
+
+
+\answer
+{\color{blue}
+The operations that are not wrapped in \verb+float()+ are arbitrary precision integer calculations.  They are all exactly correct.  When we convert them to float, they are converted to double precision floating point numbers, which we know to have 52 stored mantissa bits.
+
+These integers would all require 53 bits of mantissa to store.  So, the conversion to floating point requires rounding the mantissa.  And we learned in class that a common rounding method when there is a single extra bit (as there is here) is to round toward ``even mantissa'' values that end with a 0 bit.
+
+So $1 + 2^{53}$ is rounded down to $0+2^{53}$ which is the closest mantissa ending in a 0 bit, while $3+2^{53}$ is rounded up to $4+2^{53}$ for the same reason.  
+
+Note: The value $2+2^{53}$ can be expressed exactly as a double precision floating point number, but its mantissa ends in a 1 bit, so it won't be the target of a rounding operation for the numbers above.
+}
+
+\end{document}
