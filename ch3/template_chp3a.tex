@@ -1,0 +1,155 @@
+\documentclass[11pt]{article}
+\usepackage[paper=letterpaper, left=1in, right=1in, top=1in, bottom=1in]
+           {geometry}
+\usepackage[parfill]{parskip}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage{tikz}
+\usepackage[siunitx]{circuitikz}
+\usepackage{color}
+\usepackage{graphicx}
+
+\newcommand{\problem}[1]{\textbf{Problem #1 ---} }
+\newcommand{\answer}{{\color{red}\textit{Answer: }}}
+\newcommand{\amp}{\ampere}
+
+\tikzset{
+  pics/byte cube/.style args = {#1,#2}{
+      code = {
+         \draw[fill=white] (0,0) rectangle (1,1);
+         \node at (0.5,0.5){#1};
+         \draw[cube #1] (0,0)--(-60:2mm)--++(1,0)--++(0,1)--++(120:2mm)--(1,0)--cycle;
+         \draw(1,0)--++(-60:2mm);
+         \node at (0.5,-0.5){$2^{#2}$};
+      }
+    },
+    cube 1/.style = {fill=gray!30}, % style for bytes that are "on"
+    cube 0/.style = {fill=white},   % style for bytes that are "off"
+}
+
+\newcommand\BinaryNumber[1]{%
+  \begin{tikzpicture}[scale=0.5, every node/.style={scale=0.5}]
+     % count the number of bytes and store as \C
+     \foreach \i [count=\c] in {#1} { \xdef\C{\c} }
+     \foreach \i [count=\c, evaluate=\c as \ex using {int(\C-\c)}] in {#1} {
+       \pic at (\c, 1) {byte cube={\i,\ex}};
+     }
+  \end{tikzpicture}
+}
+
+\begin{document}
+\thispagestyle{empty}
+
+\begin{center}
+{\large CS330 Architecture and Organization}\\
+Assignment Chapter 3
+\end{center}
+
+\begin{flushright}
+Your Name Here %%% <- FIXME
+\end{flushright}
+
+\problem{1}(8 points) Convert the following binary values to decimal.
+\begin{enumerate}[(a)]
+    \item $0.101$
+    \item $110.101$
+    \item $1\;0000\;0000.0000\;0000\;1$
+    \item $111\;1111.1111\;111$
+\end{enumerate}
+
+\answer
+Answer here.
+
+\problem{2}(8 points) Convert the following decimal values to binary.
+\begin{enumerate}[(a)]
+    \item $0.75$
+    \item $16.0625$
+    \item $0.1$
+    \item $12.12$
+\end{enumerate}
+
+\answer
+Answer here.
+
+\problem{3}(8 points) Normalize the following fractional binary numbers.  Give your answers in scientific notation, expressing the mantissa in binary and the exponents in decimal.
+\begin{enumerate}[(a)]
+    \item $100.0$
+    \item $0.1110\;0001$
+    \item $1100\;1010.01$
+    \item $0.0001\;01$
+\end{enumerate}
+
+\answer
+Answer here.
+
+\fbox{\parbox{\textwidth}{
+In class we did all of our examples in 64-bit double precision floating point format, but for the sake of brevity, I would like you to look up the specifications for \textbf{single precision} floating point format (which has different sized fields and a different exponent bias).  Use single precision for the following exercises.
+}}
+
+\problem{4}(8 points) Show how the following binary numbers would be represented in single precision floating point.  In each number, the mantissa is given in binary and the exponent is given in decimal.  Present your answers in binary.
+\begin{enumerate}[(a)]
+    \item $\phantom{-}1.01\times 2^0$
+    \item $-1.1000\;1100\;0010\times 2^{ 10}$
+    \item $\phantom{-} 1.0100\;1100\;0010\times 2^{-10}$
+    \item $\phantom{-} 1.1101\;0001\;1\times 2^{-127}$
+\end{enumerate}
+
+\answer
+\begin{enumerate}[(a)]
+\item
+\BinaryNumber{0,0,0,0,0,0,0,0,% FIXME: update with your answer
+              0,0,0,0,0,0,0,0,%
+	      0,0,0,0,0,0,0,0,%
+	      0,0,0,0,0,0,0,0}
+\item
+\BinaryNumber{0,0,0,0,0,0,0,0,% FIXME: update with your answer
+              0,0,0,0,0,0,0,0,%
+	      0,0,0,0,0,0,0,0,%
+	      0,0,0,0,0,0,0,0}
+\item
+\BinaryNumber{0,0,0,0,0,0,0,0,% FIXME: update with your answer
+              0,0,0,0,0,0,0,0,%
+	      0,0,0,0,0,0,0,0,%
+	      0,0,0,0,0,0,0,0}
+\item
+\BinaryNumber{0,0,0,0,0,0,0,0,% FIXME: update with your answer
+              0,0,0,0,0,0,0,0,%
+	      0,0,0,0,0,0,0,0,%
+	      0,0,0,0,0,0,0,0}
+\end{enumerate}
+
+\problem{5}(8 points) Convert the following IEE754 single precision bit patterns to decimal values, using regular or scientific notation as you believe appropriate.
+\begin{enumerate}[(a)]
+    \item \texttt{0x\;BAC0\;0000}
+    \item \texttt{0x\;C0D0\;0000}
+    \item \texttt{0x\;F020\;1000}
+    \item \texttt{0x\;7FFF\;FFFF}
+\end{enumerate}
+
+\problem{6}(5 points) The Python programming language has arbitrary integer arithmetic and double precision floating point arithmetic.  Consider the following calculations:
+\begin{verbatim}
+>>> 2**53
+9007199254740992
+
+>>> float(2**53)
+9007199254740992.0
+
+>>> 1+2**53
+9007199254740993
+
+>>> float(1+2**53)
+9007199254740992.0
+
+>>> 3+2**53
+9007199254740995
+
+>>> float(1+2**53)
+9007199254740996.0
+\end{verbatim}
+Use your knowledge of floating point to explain what's going on.  In your explanation, explain what happens for $5+2^{53}$ and $6+2^{53}$.
+
+
+\answer
+Answer here.
+
+\end{document}
